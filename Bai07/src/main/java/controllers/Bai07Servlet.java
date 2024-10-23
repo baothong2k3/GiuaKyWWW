@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -59,10 +60,41 @@ public class Bai07Servlet extends HttpServlet {
 		case "deleteTT":
 			xoaTinTuc(request, response);
 			break;
+		case "search":
+			List<TinTuc> tinTucs = tinTucQuanLy.getAllTinTuc();
+			request.setAttribute("tinTucs", tinTucs);
+			request.setAttribute("found", false);
+			request.getRequestDispatcher("/views/TimKiem.jsp").forward(request, response);
+			break;
+		case "searchTT":
+			timTinTuc(request, response);
+			break;
 		default:
 			showList(request, response);
 			break;
 		}
+	}
+
+	private void timTinTuc(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		List<TinTuc> tinTucs = tinTucQuanLy.getAllTinTuc();
+		String maTT = request.getParameter("maTT");
+		TinTuc tinTuc = null;
+		boolean found = false;
+
+		if (maTT != null && !maTT.trim().isEmpty()) {
+			tinTuc = tinTucQuanLy.getTinTucByMa(maTT);
+			if (tinTuc != null) {
+				found = true; // Có tìm thấy tin tức
+				request.setAttribute("tinTuc", tinTuc);
+				request.setAttribute("found", found);
+			}
+		} else {
+			request.setAttribute("tinTucs", tinTucs);
+			request.setAttribute("found", found);
+		}
+
+		request.getRequestDispatcher("/views/TimKiem.jsp").forward(request, response);
 	}
 
 	private void manage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

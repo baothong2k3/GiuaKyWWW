@@ -21,6 +21,8 @@ th, td {
 		tin tức</a>
 	<a href="${pageContext.request.contextPath}/Bai07Servlet?action=manage">Chức
 		năng quản lý</a>
+		<a href="${pageContext.request.contextPath}/Bai07Servlet?action=search">Chức
+		năng tìm kiếm</a>
 	<table>
 		<thead>
 			<tr>

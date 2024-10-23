@@ -74,4 +74,48 @@ public class DanhSachTinTucQuanLyImpl implements DanhSachTinTucQuanLy {
 		return true;
 	}
 
+	@Override
+	public TinTuc getTinTucByMa(String maTinTuc) {
+		String query = "SELECT * FROM TINTUC WHERE MATT = ?";
+		TinTuc tinTuc = null;
+		try (Connection conn = this.dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(query);) {
+			ps.setString(1, maTinTuc);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				tinTuc = new TinTuc();
+				tinTuc.setMaTinTuc(rs.getString("MATT"));
+				tinTuc.setTieuDe(rs.getString("TIEUDE"));
+				tinTuc.setNoiDung(rs.getString("NOIDUNGTT"));
+				tinTuc.setLienKet(rs.getString("LIENKET"));
+				DanhMuc danhMuc = new DanhMucDAOImpl(dataSource).getDanhMucByMaDanhMuc(rs.getString("MADM"));
+				tinTuc.setDanhMuc(danhMuc);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tinTuc;
+	}
+
+	@Override
+	public List<TinTuc> getAllTinTuc() {
+		String query = "SELECT * FROM TINTUC";
+		List<TinTuc> listTinTuc = new ArrayList<TinTuc>();
+		try (Connection conn = this.dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(query);) {
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				TinTuc tinTuc = new TinTuc();
+				tinTuc.setMaTinTuc(rs.getString("MATT"));
+				tinTuc.setTieuDe(rs.getString("TIEUDE"));
+				tinTuc.setNoiDung(rs.getString("NOIDUNGTT"));
+				tinTuc.setLienKet(rs.getString("LIENKET"));
+				DanhMuc danhMuc = new DanhMucDAOImpl(dataSource).getDanhMucByMaDanhMuc(rs.getString("MADM"));
+				tinTuc.setDanhMuc(danhMuc);
+				listTinTuc.add(tinTuc);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listTinTuc;
+	}
+
 }
